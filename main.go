@@ -45,6 +45,10 @@ func main() {
 		fmt.Fprint(w, "Error 404")
 	})
 
+	router.MethodNotAllowed = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Method Not Allowed")
+	})
+
 	directory, _ := fs.Sub(resources, "resources")
 	router.ServeFiles("/files/*filepath", http.FS(directory))
 
