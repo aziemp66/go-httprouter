@@ -33,12 +33,16 @@ func main() {
 		fmt.Fprintf(w, "Image Path : %s", p.ByName("image"))
 	})
 
+	router.GET("/error", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		panic("Ups")
+	})
+
 	router.PanicHandler = func(w http.ResponseWriter, r *http.Request, i interface{}) {
 		fmt.Fprint(w, "Panic : ", i)
 	}
 
-	router.GET("/error", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		panic("Ups")
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Error 404")
 	})
 
 	directory, _ := fs.Sub(resources, "resources")
