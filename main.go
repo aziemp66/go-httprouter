@@ -1,11 +1,16 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 )
+
+//go:embed resources
+var resources embed.FS
 
 func main() {
 	router := httprouter.New()
@@ -27,6 +32,9 @@ func main() {
 	router.GET("/images/*image", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		fmt.Fprintf(w, "Image Path : %s", p.ByName("image"))
 	})
+
+	directory, _ := fs.Sub(resources, "resources")
+	router.ServeFiles("/files/*filepath", http.FS(directory))
 
 	server := http.Server{
 		Addr:    ":3000",
